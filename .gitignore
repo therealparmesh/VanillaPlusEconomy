@@ -1,0 +1,6 @@
+.DS_Store
+crashes.txt
+*.log
+*.tmp
+*.bak
+__MACOSX/

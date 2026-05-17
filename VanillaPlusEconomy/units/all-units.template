@@ -1,0 +1,4 @@
+[core]
+
+# strictLevel:1 catches repeated keys and missing build links while loading.
+strictLevel: 1
