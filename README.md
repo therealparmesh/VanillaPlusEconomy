@@ -2,9 +2,11 @@
 
 Rusted Warfare mod that adds two balanced late-game economy tiers and lets Builders refit into Combat Engineers.
 
+Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3728251918
+
 ## Install
 
-Use `VanillaPlusEconomy.rwmod` from this repo.
+Use Steam Workshop, or import `VanillaPlusEconomy.rwmod` from this repo.
 
 1. Open Rusted Warfare.
 2. Go to `Mods`.
