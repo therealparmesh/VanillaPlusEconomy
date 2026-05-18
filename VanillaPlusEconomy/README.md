@@ -26,8 +26,8 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 ### Scouts
 
 - Scout -> Honor Scout: $200, 11.1s.
-- Speed increases from 1.0 to 1.25.
-- Turn speed increases from 2.4 to 3.0.
+- Speed increases from 1.0 to 1.33.
+- Turn speed increases from 2.4 to 3.2.
 - HP, damage, range, sight, acceleration, and deceleration are unchanged.
 
 ## Install

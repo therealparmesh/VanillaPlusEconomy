@@ -21,7 +21,7 @@ Use Steam Workshop, or import `VanillaPlusEconomy.rwmod` from this repo.
 - Extractor timing is equal either way: T3 -> T4 takes 111.0s; T3 -> Overclocked -> T4 takes 83.3s + 27.7s.
 - T4 Extractors can downgrade only to Overclocked T3 with a $3000 refund.
 - Builder -> Combat Engineer: requires 2 Extractors of any type, costs $3500, takes 33.3s, and locks the Builder in place.
-- Scout -> Honor Scout: $200, 11.1s, speed 1.0 -> 1.25, turn speed 2.4 -> 3.0.
+- Scout -> Honor Scout: $200, 11.1s, speed 1.0 -> 1.33, turn speed 2.4 -> 3.2.
 
 ## Source
 
