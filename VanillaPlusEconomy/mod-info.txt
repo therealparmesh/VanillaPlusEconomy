@@ -1,6 +1,6 @@
 [mod]
 title: Vanilla+ Economy Extension
-description: Adds a balanced T4 economy tier and a Builder refit gated by 2 Extractors.
+description: Adds balanced T4 economy, Honor Scout mobility, and a Builder refit gated by 2 Extractors.
 
 minVersion: v1.15p7
 
