@@ -5,3 +5,5 @@ description: Adds balanced T4/T5 Fabricators, T4/T5 Overclocked Extractors, and 
 minVersion: v1.15p7
 
 tags: units, economy, vanilla-plus
+
+thumbnail: mod-thumbnail.png
