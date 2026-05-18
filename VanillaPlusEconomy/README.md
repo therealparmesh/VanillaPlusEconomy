@@ -1,6 +1,6 @@
 # Vanilla+ Economy Extension
 
-Rusted Warfare mod that adds one balanced T4 economy tier and lets Builders refit into Combat Engineers after building an Extractor.
+Rusted Warfare mod that adds one balanced T4 economy tier and lets Builders refit into Combat Engineers after building 2 Extractors.
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3728251918
 
@@ -19,7 +19,7 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 
 ### Builders
 
-- Builder -> Combat Engineer: requires 1 Extractor, $3500, 33.3s.
+- Builder -> Combat Engineer: requires 2 Extractors of any type, $3500, 33.3s.
 - The Builder cannot move while refitting.
 - Combat Engineer stats are unchanged and there is no downgrade.
 

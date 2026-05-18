@@ -1,6 +1,6 @@
 [mod]
 title: Vanilla+ Economy Extension
-description: Adds a balanced T4 economy tier and a Builder refit gated by 1 Extractor.
+description: Adds a balanced T4 economy tier and a Builder refit gated by 2 Extractors.
 
 minVersion: v1.15p7
 
