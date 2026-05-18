@@ -1,6 +1,6 @@
 [mod]
 title: Vanilla+ Economy Extension
-description: Adds balanced T4/T5 Fabricators, T4/T5 Overclocked Extractors, and a direct Builder refit into Combat Engineer.
+description: Adds a balanced T4 economy tier and a Builder refit gated by 1 Extractor.
 
 minVersion: v1.15p7
 

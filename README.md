@@ -1,6 +1,6 @@
 # Vanilla+ Economy Extension
 
-Rusted Warfare mod that adds two balanced late-game economy tiers and lets Builders refit into Combat Engineers.
+Rusted Warfare mod that adds one balanced T4 economy tier and lets Builders refit into Combat Engineers after building an Extractor.
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3728251918
 
@@ -16,11 +16,11 @@ Use Steam Workshop, or import `VanillaPlusEconomy.rwmod` from this repo.
 
 ## Changes
 
-- Fabricator T4: $8000 upgrade, 80s, 3000 HP, +22 credits.
-- Fabricator T5: $12000 upgrade, 110s, 4000 HP, +34 credits.
-- Extractor T4: $8000 upgrade from T3 Overclocked, 80s, 1200 HP, +45 credits.
-- Extractor T5: $12000 upgrade, 110s, 1400 HP, +68 credits.
-- Builder -> Combat Engineer: $3000, 30s. Combat Engineer stats are unchanged.
+- Fabricator T4: $11900 upgrade from T3, 121.0s, 3000 HP, +24 credits, $26000 total cost.
+- Extractor T4: $14000 upgrade from T3 or $6000 from Overclocked T3, 1200 HP, +45 credits, $20100 total cost.
+- Extractor timing is equal either way: T3 -> T4 takes 111.0s; T3 -> Overclocked -> T4 takes 83.3s + 27.7s.
+- T4 Extractors can downgrade only to Overclocked T3 with a $3000 refund.
+- Builder -> Combat Engineer: requires 1 Extractor, costs $3500, takes 33.3s, and locks the Builder in place.
 
 ## Source
 
