@@ -1,6 +1,6 @@
 # Vanilla+ Economy Extension
 
-Rusted Warfare mod that adds balanced T4 Fabricators/Extractors, a Builder -> Combat Engineer refit gated by 2 Extractors, and a small Honor Scout mobility upgrade.
+Rusted Warfare mod that adds balanced T4 Fabricators/Extractors, a Repair Bay upgrade, a Builder -> Combat Engineer refit gated by 2 Extractors, and a small Honor Scout mobility upgrade.
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3728251918
 
@@ -23,6 +23,14 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 - The Builder cannot move while refitting.
 - The result is the standard Combat Engineer with unchanged stats.
 - There is no downgrade.
+
+### Repair Bay
+
+- Repair Bay Upgrade: $2000, 55.6s.
+- HP increases from 1000 to 1500.
+- Repair speed and build assist increase from 0.20 to 0.30.
+- Repair and build-assist range increases from 230 to 280.
+- Reclaim is unchanged and there is no downgrade.
 
 ### Scouts
 
@@ -47,6 +55,7 @@ This mod replaces:
 - `extractorT3_overclocked`
 - `extractorT3_reinforced`
 - `fabricatorT3`
+- `repairBay`
 
 Do not use it with another mod that replaces those same units unless you are intentionally testing load order.
 

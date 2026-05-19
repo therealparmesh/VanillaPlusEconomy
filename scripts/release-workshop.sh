@@ -11,18 +11,24 @@ WORKSHOP_ID="${WORKSHOP_ID:-3728251918}"
 MOD_NAME="${MOD_NAME:-VanillaPlusEconomy}"
 CHANGE_NOTE="Update Vanilla+ Economy Extension."
 BUILD_ONLY=0
+CLEAN_LOCAL=0
 LOG_FILE="${LOG_FILE:-/tmp/rw_workshop_release.log}"
 AGENT_DIR="${AGENT_DIR:-/tmp/rw-workshop-agent}"
 AGENT_JAR="$AGENT_DIR/rw-workshop-agent.jar"
+REFRESH_CLASSES="$AGENT_DIR/refresh-classes"
 
 usage() {
-  echo "Usage: $0 [--build-only] [--note \"Workshop change note\"]"
+  echo "Usage: $0 [--build-only] [--remove-local-after-publish] [--note \"Workshop change note\"]"
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --build-only)
       BUILD_ONLY=1
+      shift
+      ;;
+    --remove-local-after-publish)
+      CLEAN_LOCAL=1
       shift
       ;;
     --note)
@@ -58,6 +64,144 @@ need rsync
 need javac
 need jar
 need curl
+need diff
+
+refresh_workshop_subscription() {
+  local workshop_content="$HOME/Library/Application Support/Steam/steamapps/workshop/content/647960/$WORKSHOP_ID"
+  local refresh_source="$AGENT_DIR/RefreshWorkshop.java"
+
+  if [[ -d "$workshop_content" ]] && diff -qr "$MOD_DIR" "$workshop_content" >/dev/null 2>&1; then
+    log "Workshop subscription content is current: $workshop_content"
+    return 0
+  fi
+
+  log "refreshing Workshop subscription download"
+  rm -rf "$REFRESH_CLASSES"
+  mkdir -p "$REFRESH_CLASSES"
+
+  cat > "$refresh_source" <<'JAVA'
+import com.codedisaster.steamworks.SteamAPI;
+import com.codedisaster.steamworks.SteamPublishedFileID;
+import com.codedisaster.steamworks.SteamResult;
+import com.codedisaster.steamworks.SteamUGC;
+import com.codedisaster.steamworks.SteamUGC$ItemDownloadInfo;
+import com.codedisaster.steamworks.SteamUGC$ItemInstallInfo;
+import com.codedisaster.steamworks.SteamUGCCallback;
+import com.codedisaster.steamworks.SteamUGCDetails;
+import com.codedisaster.steamworks.SteamUGCQuery;
+
+public class RefreshWorkshop implements SteamUGCCallback {
+    private volatile boolean done;
+    private volatile SteamResult result;
+
+    public static void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            throw new IllegalArgumentException("Usage: RefreshWorkshop <publishedFileId>");
+        }
+        new RefreshWorkshop().run(Long.parseLong(args[0]));
+    }
+
+    private void run(long itemId) throws Exception {
+        if (!SteamAPI.init()) {
+            throw new IllegalStateException("SteamAPI.init failed");
+        }
+
+        SteamPublishedFileID id = new SteamPublishedFileID(itemId);
+        SteamUGC ugc = new SteamUGC(this);
+        logState(ugc, id, "before");
+
+        if (!ugc.downloadItem(id, true)) {
+            throw new IllegalStateException("downloadItem returned false");
+        }
+
+        long deadline = System.currentTimeMillis() + 180000L;
+        while (System.currentTimeMillis() < deadline && !done) {
+            SteamAPI.runCallbacks();
+            logState(ugc, id, "tick");
+            if (isInstalledAndCurrent(ugc, id)) {
+                done = true;
+                result = SteamResult.OK;
+                break;
+            }
+            Thread.sleep(1000L);
+        }
+
+        logState(ugc, id, "after");
+        ugc.dispose();
+        SteamAPI.shutdown();
+
+        if (result != SteamResult.OK) {
+            throw new IllegalStateException("Workshop download did not finish OK: " + result);
+        }
+    }
+
+    private static boolean isInstalledAndCurrent(SteamUGC ugc, SteamPublishedFileID id) {
+        String state = String.valueOf(ugc.getItemState(id));
+        return state.contains("Installed")
+                && !state.contains("NeedsUpdate")
+                && !state.contains("Downloading")
+                && !state.contains("DownloadPending");
+    }
+
+    private static void logState(SteamUGC ugc, SteamPublishedFileID id, String label) {
+        SteamUGC$ItemInstallInfo install = new SteamUGC$ItemInstallInfo();
+        SteamUGC$ItemDownloadInfo download = new SteamUGC$ItemDownloadInfo();
+        boolean hasInstall = ugc.getItemInstallInfo(id, install);
+        boolean hasDownload = ugc.getItemDownloadInfo(id, download);
+        System.out.println("[RefreshWorkshop] " + label
+                + " state=" + ugc.getItemState(id)
+                + " install=" + hasInstall
+                + " folder=" + install.getFolder()
+                + " size=" + install.getSizeOnDisk()
+                + " download=" + hasDownload
+                + " bytes=" + download.getBytesDownloaded() + "/" + download.getBytesTotal());
+    }
+
+    public void onDownloadItemResult(int appID, SteamPublishedFileID publishedFileID, SteamResult result) {
+        System.out.println("[RefreshWorkshop] onDownloadItemResult app=" + appID + " result=" + result);
+        this.result = result;
+        this.done = true;
+    }
+
+    public void onUGCQueryCompleted(SteamUGCQuery query, int numResultsReturned, int totalMatchingResults, boolean isCachedData, SteamResult result) {}
+    public void onSubscribeItem(SteamPublishedFileID publishedFileID, SteamResult result) {}
+    public void onUnsubscribeItem(SteamPublishedFileID publishedFileID, SteamResult result) {}
+    public void onRequestUGCDetails(SteamUGCDetails details, SteamResult result) {}
+    public void onCreateItem(SteamPublishedFileID publishedFileID, boolean needsToAcceptWLA, SteamResult result) {}
+    public void onSubmitItemUpdate(boolean needsToAcceptWLA, SteamResult result) {}
+    public void onUserFavoriteItemsListChanged(SteamPublishedFileID publishedFileID, boolean wasAddRequest, SteamResult result) {}
+    public void onSetUserItemVote(SteamPublishedFileID publishedFileID, boolean voteUp, SteamResult result) {}
+    public void onGetUserItemVote(SteamPublishedFileID publishedFileID, boolean voted, boolean voteUp, boolean voteSkipped, SteamResult result) {}
+    public void onStartPlaytimeTracking(SteamResult result) {}
+    public void onStopPlaytimeTracking(SteamResult result) {}
+    public void onStopPlaytimeTrackingForAllItems(SteamResult result) {}
+}
+JAVA
+
+  javac --release 8 -cp "$GAME_DIR/game-lib.jar" -d "$REFRESH_CLASSES" "$refresh_source"
+
+  env \
+    SteamAppId=647960 \
+    SteamGameId=647960 \
+    DYLD_FALLBACK_LIBRARY_PATH="$GAME_DIR" \
+    "$GAME_DIR/jvm-mac/Contents/Home/bin/java" \
+    -Djava.library.path="$GAME_DIR" \
+    -cp "$REFRESH_CLASSES:$GAME_DIR/game-lib.jar" \
+    RefreshWorkshop "$WORKSHOP_ID"
+
+  if [[ ! -d "$workshop_content" ]]; then
+    echo "Workshop subscription content was not downloaded: $workshop_content" >&2
+    exit 1
+  fi
+
+  if ! diff -qr "$MOD_DIR" "$workshop_content" >/dev/null 2>&1; then
+    echo "Workshop subscription content does not match the published mod source." >&2
+    diff -qr "$MOD_DIR" "$workshop_content" >&2 || true
+    exit 1
+  fi
+
+  log "Workshop subscription content is current: $workshop_content"
+}
 
 [[ -d "$MOD_DIR" ]] || { echo "Missing mod folder: $MOD_DIR" >&2; exit 1; }
 [[ -d "$GAME_DIR" ]] || { echo "Missing Rusted Warfare folder: $GAME_DIR" >&2; exit 1; }
@@ -391,6 +535,12 @@ if command -v jq >/dev/null 2>&1; then
   log "Workshop description: $description"
 else
   printf '%s\n' "$api_response"
+fi
+
+if [[ "$CLEAN_LOCAL" -eq 1 ]]; then
+  log "removing side-loaded local mod copy"
+  rm -rf "$GAME_MOD_DIR" "$GAME_PACKAGE"
+  refresh_workshop_subscription
 fi
 
 log "release complete"
