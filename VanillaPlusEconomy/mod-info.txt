@@ -1,6 +1,6 @@
 [mod]
 title: Vanilla+ Economy Extension
-description: Adds balanced T4 Fabricators/Extractors, Repair Bay upgrade, Builder -> Combat Engineer refit gated by 2 Extractors, and Honor Scout mobility.
+description: Adds balanced T4 Fabricators/Extractors, Repair Bay upgrade, Command Center Eng -> Combat Eng refit, and Honor Scout mobility.
 
 minVersion: v1.15p7
 

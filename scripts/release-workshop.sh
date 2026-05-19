@@ -186,7 +186,7 @@ JAVA
       SteamAppId=647960 \
       SteamGameId=647960 \
       DYLD_FALLBACK_LIBRARY_PATH="$GAME_DIR" \
-      "$GAME_DIR/jvm-mac/Contents/Home/bin/java" \
+      "$GAME_DIR/jvm-mac/Contents/Home/bin/Rusted Warfare" \
       -Djava.library.path="$GAME_DIR" \
       -cp "$REFRESH_CLASSES:$GAME_DIR/game-lib.jar" \
       RefreshWorkshop "$WORKSHOP_ID"; then

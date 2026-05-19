@@ -1,6 +1,6 @@
 # Vanilla+ Economy Extension
 
-Rusted Warfare mod that adds balanced T4 Fabricators/Extractors, a Repair Bay upgrade, a Builder -> Combat Engineer refit gated by 2 Extractors, and a small Honor Scout mobility upgrade.
+Rusted Warfare mod that adds balanced T4 Fabricators/Extractors, a Repair Bay upgrade, a Command Center Eng -> Combat Eng refit, and a small Honor Scout mobility upgrade.
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3728251918
 
@@ -17,10 +17,13 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 - Reinforced Extractors keep vanilla stats and count for the refit gate.
 - T4 can only downgrade to Overclocked T3 and refunds $3000.
 
-### Builders
+### Engineer
 
-- Builder -> Combat Engineer: requires 2 Extractors of any type, $3500, 33.3s.
-- The Builder cannot move while refitting.
+- Engineer: built from the Command Center for $500.
+- Uses vanilla Builder stats, repair/build behavior, and build options.
+- Uses Mega Builder sprites only; it does not use Mega Builder stats or weapons.
+- Eng -> Combat Eng: requires 2 total Extractors or Fabricators of any type, $3500, 33.3s.
+- The Engineer cannot move while refitting.
 - The result is the standard Combat Engineer with unchanged stats.
 - There is no downgrade.
 
@@ -47,7 +50,6 @@ Subscribe on Steam Workshop, or import `VanillaPlusEconomy.rwmod` from Rusted Wa
 
 This mod replaces:
 
-- `builder`
 - `scout`
 - `extractorT1`
 - `extractorT2`
@@ -56,6 +58,10 @@ This mod replaces:
 - `extractorT3_reinforced`
 - `fabricatorT3`
 - `repairBay`
+
+This mod also adds:
+
+- `vpe_engineer`
 
 Do not use it with another mod that replaces those same units unless you are intentionally testing load order.
 
