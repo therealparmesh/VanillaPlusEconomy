@@ -180,14 +180,28 @@ JAVA
 
   javac --release 8 -cp "$GAME_DIR/game-lib.jar" -d "$REFRESH_CLASSES" "$refresh_source"
 
-  env \
-    SteamAppId=647960 \
-    SteamGameId=647960 \
-    DYLD_FALLBACK_LIBRARY_PATH="$GAME_DIR" \
-    "$GAME_DIR/jvm-mac/Contents/Home/bin/java" \
-    -Djava.library.path="$GAME_DIR" \
-    -cp "$REFRESH_CLASSES:$GAME_DIR/game-lib.jar" \
-    RefreshWorkshop "$WORKSHOP_ID"
+  local refresh_ok=0
+  for attempt in 1 2 3; do
+    if env \
+      SteamAppId=647960 \
+      SteamGameId=647960 \
+      DYLD_FALLBACK_LIBRARY_PATH="$GAME_DIR" \
+      "$GAME_DIR/jvm-mac/Contents/Home/bin/java" \
+      -Djava.library.path="$GAME_DIR" \
+      -cp "$REFRESH_CLASSES:$GAME_DIR/game-lib.jar" \
+      RefreshWorkshop "$WORKSHOP_ID"; then
+      refresh_ok=1
+      break
+    fi
+
+    log "Workshop subscription refresh attempt $attempt failed; retrying"
+    sleep 3
+  done
+
+  if [[ "$refresh_ok" -ne 1 ]]; then
+    echo "Workshop subscription refresh failed after 3 attempts." >&2
+    exit 1
+  fi
 
   if [[ ! -d "$workshop_content" ]]; then
     echo "Workshop subscription content was not downloaded: $workshop_content" >&2
