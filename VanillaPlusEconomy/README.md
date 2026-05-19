@@ -22,7 +22,7 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 - Engineer: built from the Command Center for $500.
 - Uses vanilla Builder stats, repair/build behavior, and build options.
 - Uses Mega Builder sprites only; it does not use Mega Builder stats or weapons.
-- Eng -> Combat Eng: requires 2 total Extractors or Fabricators of any type, $3500, 33.3s.
+- Eng -> Combat Eng: requires 2 Extractors of any type, $3500, 33.3s.
 - The Engineer cannot move while refitting.
 - The result is the standard Combat Engineer with unchanged stats.
 - There is no downgrade.

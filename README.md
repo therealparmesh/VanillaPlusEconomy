@@ -22,7 +22,7 @@ Use Steam Workshop, or import `VanillaPlusEconomy.rwmod` from this repo.
 - T4 Extractors can downgrade only to Overclocked T3 with a $3000 refund.
 - Repair Bay Upgrade: $2000, 55.6s, 1000 -> 1500 HP, 0.20 -> 0.30 repair/build assist, 230 -> 280 range.
 - Engineer: built from the Command Center for $500 with vanilla Builder stats and Mega Builder sprites.
-- Eng -> Combat Eng: requires 2 total Extractors or Fabricators of any type, costs $3500, takes 33.3s, locks the Engineer in place, and produces the standard Combat Engineer.
+- Eng -> Combat Eng: requires 2 Extractors of any type, costs $3500, takes 33.3s, locks the Engineer in place, and produces the standard Combat Engineer.
 - Scout -> Honor Scout: $200, 11.1s, speed 1.0 -> 1.33, turn speed 2.4 -> 3.2.
 
 ## Source

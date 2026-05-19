@@ -181,7 +181,7 @@ JAVA
   javac --release 8 -cp "$GAME_DIR/game-lib.jar" -d "$REFRESH_CLASSES" "$refresh_source"
 
   local refresh_ok=0
-  for attempt in 1 2 3; do
+  for attempt in 1 2 3 4 5 6; do
     if env \
       SteamAppId=647960 \
       SteamGameId=647960 \
@@ -195,11 +195,11 @@ JAVA
     fi
 
     log "Workshop subscription refresh attempt $attempt failed; retrying"
-    sleep 3
+    sleep 5
   done
 
   if [[ "$refresh_ok" -ne 1 ]]; then
-    echo "Workshop subscription refresh failed after 3 attempts." >&2
+    echo "Workshop subscription refresh failed after 6 attempts." >&2
     exit 1
   fi
 
