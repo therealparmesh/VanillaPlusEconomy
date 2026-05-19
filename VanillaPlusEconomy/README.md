@@ -1,6 +1,6 @@
 # Vanilla+ Economy Extension
 
-Rusted Warfare mod that adds one balanced T4 economy tier, a small Scout mobility upgrade, and a gated Builder refit.
+Rusted Warfare mod that adds balanced T4 Fabricators/Extractors, a Builder -> Combat Engineer refit gated by 2 Extractors, and a small Honor Scout mobility upgrade.
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3728251918
 
@@ -21,7 +21,8 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 
 - Builder -> Combat Engineer: requires 2 Extractors of any type, $3500, 33.3s.
 - The Builder cannot move while refitting.
-- Combat Engineer stats are unchanged and there is no downgrade.
+- The result is the standard Combat Engineer with unchanged stats.
+- There is no downgrade.
 
 ### Scouts
 
