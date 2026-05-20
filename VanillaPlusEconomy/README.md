@@ -14,7 +14,8 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 
 - T3 -> T4: $14000, 111.0s, 1200 HP, +45 credits, $20100 total cost.
 - T3 -> Overclocked -> T4: $8000 + $6000, 83.3s + 27.7s, 1200 HP, +45 credits, $20100 total cost.
-- Reinforced Extractors keep vanilla stats and count for the refit gate.
+- T3 -> Reinforced -> T4: $3000 + $11000, 23.8s + 87.2s, 1200 HP, +45 credits, $20100 total cost.
+- Reinforced Extractors keep vanilla shield stats and count for the refit gate.
 - T4 can only downgrade to Overclocked T3 and refunds $3000.
 
 ### Engineer
