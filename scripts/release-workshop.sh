@@ -68,7 +68,10 @@ need diff
 
 refresh_workshop_subscription() {
   local workshop_content="$HOME/Library/Application Support/Steam/steamapps/workshop/content/647960/$WORKSHOP_ID"
-  local refresh_source="$AGENT_DIR/RefreshWorkshop.java"
+  local refresh_source="$AGENT_DIR/RwWorkshopRefreshAgent.java"
+  local refresh_agent_jar="$AGENT_DIR/rw-workshop-refresh-agent.jar"
+  local refresh_manifest="$AGENT_DIR/refresh-manifest.mf"
+  local refresh_log="${REFRESH_LOG_FILE:-/tmp/rw_workshop_refresh.log}"
 
   if [[ -d "$workshop_content" ]] && diff -qr "$MOD_DIR" "$workshop_content" >/dev/null 2>&1; then
     log "Workshop subscription content is current: $workshop_content"
@@ -90,20 +93,41 @@ import com.codedisaster.steamworks.SteamUGCCallback;
 import com.codedisaster.steamworks.SteamUGCDetails;
 import com.codedisaster.steamworks.SteamUGCQuery;
 
-public class RefreshWorkshop implements SteamUGCCallback {
-    private volatile boolean done;
-    private volatile SteamResult result;
+public class RwWorkshopRefreshAgent implements SteamUGCCallback {
+    private volatile boolean callbackDone;
+    private volatile SteamResult callbackResult;
 
-    public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            throw new IllegalArgumentException("Usage: RefreshWorkshop <publishedFileId>");
-        }
-        new RefreshWorkshop().run(Long.parseLong(args[0]));
+    public static void premain(final String args) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    new RwWorkshopRefreshAgent().run(Long.parseLong(args.trim()));
+                    System.exit(0);
+                } catch (Throwable t) {
+                    System.out.println("[RwWorkshopRefreshAgent] ERROR: " + t);
+                    t.printStackTrace(System.out);
+                    System.exit(2);
+                }
+            }
+        }, "rw-workshop-refresh-agent").start();
     }
 
     private void run(long itemId) throws Exception {
-        if (!SteamAPI.init()) {
-            throw new IllegalStateException("SteamAPI.init failed");
+        System.out.println("[RwWorkshopRefreshAgent] waiting for SteamAPI.init");
+        boolean initialized = false;
+        for (int i = 0; i < 240; i++) {
+            try {
+                if (SteamAPI.isSteamRunning() && SteamAPI.init()) {
+                    initialized = true;
+                    break;
+                }
+            } catch (Throwable t) {
+                System.out.println("[RwWorkshopRefreshAgent] init attempt " + i + " failed: " + t);
+            }
+            Thread.sleep(500L);
+        }
+        if (!initialized) {
+            throw new IllegalStateException("SteamAPI.init did not become ready");
         }
 
         SteamPublishedFileID id = new SteamPublishedFileID(itemId);
@@ -115,24 +139,22 @@ public class RefreshWorkshop implements SteamUGCCallback {
         }
 
         long deadline = System.currentTimeMillis() + 180000L;
-        while (System.currentTimeMillis() < deadline && !done) {
+        while (System.currentTimeMillis() < deadline) {
             SteamAPI.runCallbacks();
             logState(ugc, id, "tick");
+            if (callbackDone && callbackResult != SteamResult.OK) {
+                throw new IllegalStateException("download callback failed: " + callbackResult);
+            }
             if (isInstalledAndCurrent(ugc, id)) {
-                done = true;
-                result = SteamResult.OK;
-                break;
+                logState(ugc, id, "after");
+                ugc.dispose();
+                SteamAPI.shutdown();
+                System.out.println("[RwWorkshopRefreshAgent] download OK");
+                return;
             }
             Thread.sleep(1000L);
         }
-
-        logState(ugc, id, "after");
-        ugc.dispose();
-        SteamAPI.shutdown();
-
-        if (result != SteamResult.OK) {
-            throw new IllegalStateException("Workshop download did not finish OK: " + result);
-        }
+        throw new IllegalStateException("timed out waiting for workshop refresh");
     }
 
     private static boolean isInstalledAndCurrent(SteamUGC ugc, SteamPublishedFileID id) {
@@ -148,7 +170,7 @@ public class RefreshWorkshop implements SteamUGCCallback {
         SteamUGC$ItemDownloadInfo download = new SteamUGC$ItemDownloadInfo();
         boolean hasInstall = ugc.getItemInstallInfo(id, install);
         boolean hasDownload = ugc.getItemDownloadInfo(id, download);
-        System.out.println("[RefreshWorkshop] " + label
+        System.out.println("[RwWorkshopRefreshAgent] " + label
                 + " state=" + ugc.getItemState(id)
                 + " install=" + hasInstall
                 + " folder=" + install.getFolder()
@@ -158,9 +180,9 @@ public class RefreshWorkshop implements SteamUGCCallback {
     }
 
     public void onDownloadItemResult(int appID, SteamPublishedFileID publishedFileID, SteamResult result) {
-        System.out.println("[RefreshWorkshop] onDownloadItemResult app=" + appID + " result=" + result);
-        this.result = result;
-        this.done = true;
+        System.out.println("[RwWorkshopRefreshAgent] onDownloadItemResult app=" + appID + " result=" + result);
+        callbackResult = result;
+        callbackDone = true;
     }
 
     public void onUGCQueryCompleted(SteamUGCQuery query, int numResultsReturned, int totalMatchingResults, boolean isCachedData, SteamResult result) {}
@@ -178,28 +200,45 @@ public class RefreshWorkshop implements SteamUGCCallback {
 }
 JAVA
 
+  cat > "$refresh_manifest" <<'MANIFEST'
+Premain-Class: RwWorkshopRefreshAgent
+MANIFEST
   javac --release 8 -cp "$GAME_DIR/game-lib.jar" -d "$REFRESH_CLASSES" "$refresh_source"
+  jar cfm "$refresh_agent_jar" "$refresh_manifest" -C "$REFRESH_CLASSES" .
 
   local refresh_ok=0
-  for attempt in 1 2 3 4 5 6; do
-    if env \
-      SteamAppId=647960 \
-      SteamGameId=647960 \
-      DYLD_FALLBACK_LIBRARY_PATH="$GAME_DIR" \
-      "$GAME_DIR/jvm-mac/Contents/Home/bin/Rusted Warfare" \
-      -Djava.library.path="$GAME_DIR" \
-      -cp "$REFRESH_CLASSES:$GAME_DIR/game-lib.jar" \
-      RefreshWorkshop "$WORKSHOP_ID"; then
+  for attempt in 1 2 3; do
+    rm -f "$refresh_log"
+    if (
+      cd "$GAME_DIR"
+      env \
+        SteamAppId=647960 \
+        SteamGameId=647960 \
+        DYLD_FALLBACK_LIBRARY_PATH="$GAME_DIR" \
+        "$GAME_DIR/jvm-mac/Contents/Home/bin/Rusted Warfare" \
+        "-javaagent:$refresh_agent_jar=$WORKSHOP_ID" \
+        -Xdock:name='Rusted Warfare' \
+        -Xdock:icon=res/drawable/icon_window.png \
+        -Dfile.encoding=UTF-8 \
+        -Djava.library.path=. \
+        -cp 'game-lib.jar:libs/*' \
+        com.corrodinggames.rts.java.Main \
+        -steam \
+        -nosound \
+        -nomusic \
+        -log "$refresh_log"
+    ); then
       refresh_ok=1
       break
     fi
 
     log "Workshop subscription refresh attempt $attempt failed; retrying"
+    tail -n 80 "$refresh_log" >&2 || true
     sleep 5
   done
 
   if [[ "$refresh_ok" -ne 1 ]]; then
-    echo "Workshop subscription refresh failed after 6 attempts." >&2
+    echo "Workshop subscription refresh failed after 3 attempts." >&2
     exit 1
   fi
 

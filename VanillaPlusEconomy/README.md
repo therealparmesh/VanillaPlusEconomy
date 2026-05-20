@@ -34,6 +34,7 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 - HP increases from 1000 to 1500.
 - Repair speed and build assist increase from 0.20 to 0.30.
 - Repair and build-assist range increases from 230 to 280.
+- The upgraded sprite has a subtle gold accent.
 - Reclaim is unchanged and there is no downgrade.
 
 ### Scouts
