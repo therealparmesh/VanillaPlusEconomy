@@ -32,10 +32,11 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 
 - Repair Bay Upgrade: $2000, 55.6s.
 - HP increases from 1000 to 1500.
-- Repair speed and build assist increase from 0.20 to 0.30.
+- Ordered repair speed and build assist increase from 0.20 to 0.30.
 - Repair and build-assist range increases from 230 to 280.
 - The upgraded sprite has a subtle gold accent.
 - Reclaim is unchanged and there is no downgrade.
+- Passive auto-repair is disabled on the upgraded bay to prevent reclaim/repair loops.
 
 ### Scouts
 
