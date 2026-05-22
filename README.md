@@ -20,7 +20,7 @@ Use Steam Workshop, or import `VanillaPlusEconomy.rwmod` from this repo.
 - Extractor T4: $14000 upgrade from T3, $6000 from Overclocked T3, or $11000 from Reinforced T3, 1200 HP, +45 credits, $20100 total cost.
 - Extractor timing is equal across T3 routes: direct T3 -> T4 takes 111.0s; Overclocked route takes 83.3s + 27.7s; Reinforced route takes 23.8s + 87.2s.
 - T4 Extractors can downgrade only to Overclocked T3 with a $3000 refund.
-- Repair Bay Upgrade: $2000, 55.6s, 1000 -> 1500 HP, 0.20 -> 0.30 repair/build assist, 230 -> 280 range, subtle gold-accent sprite.
+- Repair Bay Upgrade: $2000, 55.6s, 1000 -> 1500 HP, 0.20 -> 0.30 repair/build assist, 230 -> 280 range, subtle gold-accent sprite. Upgraded bays use self-scrap instead of target-reclaim: 10s, $2625 refund.
 - Engineer: built from the Command Center for $500 with vanilla Builder stats and Mega Builder sprites.
 - Eng -> Combat Eng: requires 2 Extractors of any type, costs $3500, takes 33.3s, locks the Engineer in place, and produces the standard Combat Engineer.
 - Scout -> Honor Scout: $200, 11.1s, speed 1.0 -> 1.33, turn speed 2.4 -> 3.2.
