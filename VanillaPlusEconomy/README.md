@@ -36,7 +36,7 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=372825191
 - Repair and build-assist range increases from 230 to 280.
 - The upgraded sprite has a subtle gold accent.
 - Regular Repair Bays keep target-reclaim.
-- Upgraded Repair Bays use Scrap instead of target-reclaim: 10s, $2625 refund.
+- Upgraded Repair Bays use a self-only Reclaim action instead of target-reclaim: 16.3s, $2800 refund.
 - There is no downgrade.
 
 ### Scouts
